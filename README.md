@@ -1,4 +1,4 @@
-# A Vim Plugin for Lively Previewing Your LaTeX Output
+# A Vim Plugin for Lively Previewing LaTeX PDF Output
 
 This plugin provides a live preview of the output PDF of your LaTeX file. The
 display of the output PDF file will be updated lively as you type (just hold
