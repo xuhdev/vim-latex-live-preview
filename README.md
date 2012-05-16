@@ -10,11 +10,13 @@ support other types of source file, such as HTML, markdown, etc.
 ## Installation
 
 Before installation, you need to make sure your Vim version is later than 7.3,
-and is compiled with `+python` feature. Then copy `plugin/livepreview.vim` to
-`~/.vim/plugin`.
+and is compiled with `+python` feature. Also, you need to have [evince][] or
+[okular][] installed. Then copy `plugin/livepreview.vim` to `~/.vim/plugin`.
 
 ## Usage
 
 Simply execute `:LPStartPreview` to launch the previewer. Then try to type in
 Vim and you should see the live update.
 
+[evince]: http://projects.gnome.org/evince/
+[okular]: http://okular.kde.org/
