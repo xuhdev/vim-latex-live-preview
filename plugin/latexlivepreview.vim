@@ -152,7 +152,7 @@ endif
 
 unlet! s:init_msg
 
-command! LPStartPreview call s:StartPreview()
+command! LLPStartPreview call s:StartPreview()
 
 autocmd CursorHold,CursorHoldI,BufWritePost *.tex call s:Compile()
 
