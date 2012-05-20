@@ -2,10 +2,9 @@
 
 This plugin provides a live preview of the output PDF of your LaTeX file. The
 display of the output PDF file will be updated lively as you type (just hold
-the cursor and you will see the PDF file updated). Currently, vim-live-preview
+the cursor and you will see the PDF file updated). Currently, vim-latex-live-preview
 is still in **alpha** stage and only support UNIX-like systems. Please let me
-know if you have any suggestions. In the future, vim-live-preview should also
-support other types of source file, such as HTML, markdown, etc.
+know if you have any suggestions.
 
 ## Installation
 
