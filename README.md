@@ -18,5 +18,13 @@ and is compiled with `+python` feature. Also, you need to have [evince][] or
 Simply execute `:LLPStartPreview` to launch the previewer. Then try to type in
 Vim and you should see the live update.
 
+## Screenshot
+
+![](https://github.com/xuhdev/vim-latex-live-preview/raw/master/screenshots/screenshot.gif)
+
+<!--
+The screenshot is at ./screenshots/screenshot.gif
+-->
+
 [evince]: http://projects.gnome.org/evince/
 [okular]: http://okular.kde.org/
