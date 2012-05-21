@@ -16,7 +16,8 @@ and is compiled with `+python` feature. Also, you need to have [evince][] or
 ## Usage
 
 Simply execute `:LLPStartPreview` to launch the previewer. Then try to type in
-Vim and you should see the live update.
+Vim and you should see the live update. The updating time could be set by Vim's
+['updatetime'][] option.
 
 ## Screenshot
 
@@ -26,5 +27,6 @@ Vim and you should see the live update.
 The screenshot is at ./screenshots/screenshot.gif
 -->
 
+['updatetime']: http://vimdoc.sourceforge.net/htmldoc/options.html#%27updatetime%27
 [evince]: http://projects.gnome.org/evince/
 [okular]: http://okular.kde.org/
