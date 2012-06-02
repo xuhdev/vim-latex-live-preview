@@ -17,7 +17,7 @@ and is compiled with `+python` feature. Also, you need to have [evince][] or
 
 Simply execute `:LLPStartPreview` to launch the previewer. Then try to type in
 Vim and you should see the live update. The updating time could be set by Vim's
-['updatetime'][] option.
+['updatetime'][] option. The suggested value of 'updatetime' is `1`.
 
 ## Screenshot
 
