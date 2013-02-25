@@ -13,7 +13,7 @@
 " more details.
 
 " You should have received a copy of the GNU General Public License along with
-" SingleCompile.  If not, see <http://www.gnu.org/licenses/>.
+" vim-live-preview.  If not, see <http://www.gnu.org/licenses/>.
 
 
 if v:version < 700
