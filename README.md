@@ -19,7 +19,8 @@ option in your `.vimrc`:
     let g:livepreview_previewer = 'your_viewer'
 
 Please note that not every pdf viewer could work with this plugin. Currently
-evince and okular are known to work well.  
+evince and okular are known to work well. You can find a list of known working
+pdf viewers [here](https://github.com/xuhdev/vim-latex-live-preview/wiki/Known-Working-PDF-Viewers).
 
 ## Usage
 
