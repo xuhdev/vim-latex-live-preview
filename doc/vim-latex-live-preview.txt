@@ -1,0 +1,31 @@
+*vim-latex-live-preview.txt*
+
+File: vim-latex-live-preview.txt
+Version: 0.1.0
+Original Author and Current Maintainer: Hong Xu <hong@topbug.net>
+Last Change: 16 Apr 2013
+Homepage: https://github.com/xuhdev/vim-latex-live-preview#readme
+Git repo: https://github.com/xuhdev/vim-latex-live-preview
+Description: A Vim Plugin for Lively Previewing LaTeX PDF Output
+ 
+License:
+    Copyright (C) 2012-2013 Hong Xu
+
+    This file is part of vim-latex-live-preview.
+
+    vim-latex-live-preview is free software: you can redistribute it and/or
+    modify it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or (at your
+    option) any later version.
+
+    vim-latex-live-preview is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General
+    Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with vim-latex-live-preview.  If not, see <http://www.gnu.org/licenses/>.
+
+Please see the README file for documentation:
+
+https://github.com/xuhdev/vim-latex-live-preview#readme
