@@ -70,6 +70,12 @@ function! s:Compile()
                 \ b:livepreview_buf_data['tmp_dir'] . ' ' .
                 \ b:livepreview_buf_data['tmp_src_file'])
 
+    if b:livepreview_buf_data['has_bibliography']
+        " ToDo: Make the following work in Windows
+        call system('cd ' .  b:livepreview_buf_data['tmp_dir'] .
+                    \ ' && bibtex *.aux')
+    endif
+
     lcd -
 endfunction
 
@@ -98,6 +104,29 @@ EEOOFF
                 \ b:livepreview_buf_data['tmp_src_file'])
     if v:shell_error != 0
         echo 'Failed to compile'
+    endif
+
+    " Enable compilation of bibliography:
+    let l:bib_files = split( glob( expand( '%:h' ) . '/**/*bib' ) )
+    let b:livepreview_buf_data['has_bibliography'] = 0
+    if len( l:bib_files ) > 0
+        let b:livepreview_buf_data['has_bibliography'] = 1
+        for bib_file in l:bib_files
+            let bib_fn = fnamemodify(bib_file, ':t')
+            call writefile(readfile(bib_file),
+                        \ b:livepreview_buf_data['tmp_dir'] . '/' . bib_fn )
+        endfor
+        " ToDo: Make the following work in Windows
+        silent call system('cd ' . b:livepreview_buf_data['tmp_dir'] .
+                    \ ' && bibtex *.aux')
+        " Bibtex requires multiple latex compilations:
+        silent call system(
+                    \ 'pdflatex -interaction=nonstopmode -output-directory=' .
+                    \ b:livepreview_buf_data['tmp_dir'] . ' ' .
+                    \ b:livepreview_buf_data['tmp_src_file'])
+    endif
+    if v:shell_error != 0
+        echo 'Failed to compile bibliography'
     endif
 
     call s:RunInBackground(s:previewer . ' ' . l:tmp_out_file)
