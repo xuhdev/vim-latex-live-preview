@@ -26,7 +26,9 @@ pdf viewers [here](https://github.com/xuhdev/vim-latex-live-preview/wiki/Known-W
 
 Simply execute `:LLPStartPreview` to launch the previewer. Then try to type in
 Vim and you should see the live update. The updating time could be set by Vim's
-['updatetime'][] option. The suggested value of 'updatetime' is `1`.
+['updatetime'][] option. If your pdf viewer crashes when updates happen, you can
+try to set 'updatetime' to a higher value to make it update less frequently. The
+suggested value of 'updatetime' is `1000`.
 
 ## Screenshot
 
