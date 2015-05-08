@@ -66,7 +66,7 @@ function! s:Compile()
     silent exec 'write! ' . b:livepreview_buf_data['tmp_src_file']
 
     call s:RunInBackground(
-                \ 'pdflatex -interaction=nonstopmode -output-directory=' .
+                \ 'pdflatex -shell-escape -interaction=nonstopmode -output-directory=' .
                 \ b:livepreview_buf_data['tmp_dir'] . ' ' .
                 \ b:livepreview_buf_data['tmp_src_file'])
 
@@ -99,7 +99,7 @@ EEOOFF
     let l:tmp_out_file = b:livepreview_buf_data['tmp_dir'] . '/' .
                 \ expand('%:r') . '.pdf'
 
-    silent call system('pdflatex -interaction=nonstopmode -output-directory=' .
+    silent call system('pdflatex -shell-escape -interaction=nonstopmode -output-directory=' .
                 \ b:livepreview_buf_data['tmp_dir'] . ' ' .
                 \ b:livepreview_buf_data['tmp_src_file'])
     if v:shell_error != 0
@@ -121,7 +121,7 @@ EEOOFF
                     \ ' && bibtex *.aux')
         " Bibtex requires multiple latex compilations:
         silent call system(
-                    \ 'pdflatex -interaction=nonstopmode -output-directory=' .
+                    \ 'pdflatex -shell-escape -interaction=nonstopmode -output-directory=' .
                     \ b:livepreview_buf_data['tmp_dir'] . ' ' .
                     \ b:livepreview_buf_data['tmp_src_file'])
     endif
