@@ -92,8 +92,7 @@ EEOOFF
 
     let b:livepreview_buf_data['tmp_src_file'] =
                 \ b:livepreview_buf_data['tmp_dir'] . '/' .
-                \ fnameescape(expand('%:r')) .
-                \ '.' . expand('%:e')
+                \ fnameescape(expand('%:r')) . '.' . expand('%:e')
 
     silent exec 'write! ' . b:livepreview_buf_data['tmp_src_file']
 
