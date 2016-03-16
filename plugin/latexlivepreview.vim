@@ -91,13 +91,14 @@ vim.command("let b:livepreview_buf_data['tmp_dir'] = '" +
 EEOOFF
 
     let b:livepreview_buf_data['tmp_src_file'] =
-                \ b:livepreview_buf_data['tmp_dir'] . '/' . expand('%:r') .
+                \ b:livepreview_buf_data['tmp_dir'] . '/' .
+                \ fnameescape(expand('%:r')) .
                 \ '.' . expand('%:e')
 
     silent exec 'write! ' . b:livepreview_buf_data['tmp_src_file']
 
     let l:tmp_out_file = b:livepreview_buf_data['tmp_dir'] . '/' .
-                \ expand('%:r') . '.pdf'
+                \ fnameescape(expand('%:r')) . '.pdf'
 
     silent call system('pdflatex -shell-escape -interaction=nonstopmode -output-directory=' .
                 \ b:livepreview_buf_data['tmp_dir'] . ' ' .
