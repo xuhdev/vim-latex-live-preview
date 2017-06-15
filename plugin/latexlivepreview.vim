@@ -104,6 +104,7 @@ EEOOFF
                 \ b:livepreview_buf_data['tmp_src_file'])
     if v:shell_error != 0
         echo 'Failed to compile'
+        return
     endif
 
     " Enable compilation of bibliography:
@@ -127,6 +128,7 @@ EEOOFF
     endif
     if v:shell_error != 0
         echo 'Failed to compile bibliography'
+        return
     endif
 
     call s:RunInBackground(s:previewer . ' ' . l:tmp_out_file)
