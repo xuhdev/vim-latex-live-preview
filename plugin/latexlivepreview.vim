@@ -91,7 +91,7 @@ function! s:StartPreview(...)
     " Create a temp directory for current buffer
     python << EEOOFF
 vim.command("let b:livepreview_buf_data['tmp_dir'] = '" +
-        tempfile.mkdtemp() + "'")
+        tempfile.mkdtemp(prefix="vim-latex-live-preview-") + "'")
 EEOOFF
 
     let b:livepreview_buf_data['tmp_src_file'] =
