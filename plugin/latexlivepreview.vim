@@ -66,9 +66,13 @@ function! s:Compile()
     silent exec 'write! ' . b:livepreview_buf_data['tmp_src_file']
 
     call s:RunInBackground(
-                \ 'pdflatex -shell-escape -interaction=nonstopmode -output-directory=' .
-                \ b:livepreview_buf_data['tmp_dir'] . ' ' .
-                \ b:livepreview_buf_data['tmp_src_file'])
+                \ 'env ' .
+                \       'TEXINPUTS=' . b:livepreview_buf_data['tmp_dir'] . ': ' .
+                \ 'pdflatex ' .
+                \       '-shell-escape ' .
+                \       '-interaction=nonstopmode ' .
+                \       '-output-directory=' . b:livepreview_buf_data['tmp_dir'] . ' ' .
+                \       b:livepreview_buf_data['root_file'])
 
     if b:livepreview_buf_data['has_bibliography']
         " ToDo: Make the following work in Windows
@@ -79,9 +83,9 @@ function! s:Compile()
     lcd -
 endfunction
 
-function! s:StartPreview()
+function! s:StartPreview(...)
     lcd %:p:h
-    
+
     let b:livepreview_buf_data = {}
 
     " Create a temp directory for current buffer
@@ -94,14 +98,23 @@ EEOOFF
                 \ b:livepreview_buf_data['tmp_dir'] . '/' .
                 \ fnameescape(expand('%:r')) . '.' . expand('%:e')
 
+    let b:livepreview_buf_data['root_file'] = ( a:0 > 0 ) ?
+                \ a:1 :
+                \ b:livepreview_buf_data['tmp_src_file']
+
     silent exec 'write! ' . b:livepreview_buf_data['tmp_src_file']
 
     let l:tmp_out_file = b:livepreview_buf_data['tmp_dir'] . '/' .
-                \ fnameescape(expand('%:r')) . '.pdf'
+                \ fnameescape(fnamemodify(b:livepreview_buf_data['root_file'], ':t:r')) . '.pdf'
 
-    silent call system('pdflatex -shell-escape -interaction=nonstopmode -output-directory=' .
-                \ b:livepreview_buf_data['tmp_dir'] . ' ' .
-                \ b:livepreview_buf_data['tmp_src_file'])
+    silent call system(
+                \ 'env ' .
+                \       'TEXINPUTS=' . b:livepreview_buf_data['tmp_dir'] . ': ' .
+                \ 'pdflatex ' .
+                \       '-shell-escape ' .
+                \       '-interaction=nonstopmode ' .
+                \       '-output-directory=' . b:livepreview_buf_data['tmp_dir'] . ' ' .
+                \       b:livepreview_buf_data['root_file'])
     if v:shell_error != 0
         echo 'Failed to compile'
     endif
@@ -121,9 +134,13 @@ EEOOFF
                     \ ' && bibtex *.aux')
         " Bibtex requires multiple latex compilations:
         silent call system(
-                    \ 'pdflatex -shell-escape -interaction=nonstopmode -output-directory=' .
-                    \ b:livepreview_buf_data['tmp_dir'] . ' ' .
-                    \ b:livepreview_buf_data['tmp_src_file'])
+                    \ 'env ' .
+                    \       'TEXINPUTS=' . b:livepreview_buf_data['tmp_dir'] . ': ' .
+                    \ 'pdflatex ' .
+                    \       '-shell-escape ' .
+                    \       '-interaction=nonstopmode ' .
+                    \       '-output-directory=' . b:livepreview_buf_data['tmp_dir'] . ' ' .
+                    \       b:livepreview_buf_data['root_file'])
     endif
     if v:shell_error != 0
         echo 'Failed to compile bibliography'
@@ -132,7 +149,7 @@ EEOOFF
     call s:RunInBackground(s:previewer . ' ' . l:tmp_out_file)
 
     lcd -
-    
+
     let b:livepreview_buf_data['preview_running'] = 1
 endfunction
 
@@ -181,7 +198,7 @@ endif
 
 unlet! s:init_msg
 
-command! LLPStartPreview call s:StartPreview()
+command! -nargs=* LLPStartPreview call s:StartPreview(<f-args>)
 
 autocmd CursorHold,CursorHoldI,BufWritePost *.tex call s:Compile()
 
