@@ -98,9 +98,19 @@ EEOOFF
                 \ b:livepreview_buf_data['tmp_dir'] . '/' .
                 \ fnameescape(expand('%:r')) . '.' . expand('%:e')
 
-    let b:livepreview_buf_data['root_file'] = ( a:0 > 0 ) ?
-                \ a:1 :
-                \ b:livepreview_buf_data['tmp_src_file']
+    " Guess the root file which will be compiled, using first the argument
+    " passed, then the first line declaration of the source file and
+    " eventually fallback to the current file.
+    let l:root_line = substitute(getline(1),
+                \ '\v^\s*\%\s*!tex\s*root\s*\=\s*(.*)\s*$',
+                \ '\1', '')
+    if ( a:0 > 0 )
+        let b:livepreview_buf_data['root_file'] = a:1
+    elseif ( l:root_line != getline(1) && strlen(l:root_line) > 0 )     " TODO: existence of `% !TEX` declaration condition must be clean...
+        let b:livepreview_buf_data['root_file'] = l:root_line
+    else
+        let b:livepreview_buf_data['root_file'] = b:livepreview_buf_data['tmp_src_file']
+    endif
 
     silent exec 'write! ' . b:livepreview_buf_data['tmp_src_file']
 
