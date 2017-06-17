@@ -8,15 +8,33 @@ you have any suggestions.
 
 ## Installation
 
+### Manually
+
 Before installation, you need to make sure your Vim version is later than 7.3,
 and is compiled with `+python` feature. Then copy `plugin/latexlivepreview.vim`
 to `~/.vim/plugin`.
+
+### Vim-plug
+
+In the `vim-plug` section of your `~/.vimrc`:
+
+```vim
+" A Vim Plugin for Lively Previewing LaTeX PDF Output
+Plug 'xuhdev/vim-latex-live-preview'
+```
+
+Execute `:so ~/.vimrc` to reload the config and `:PlugInstall` to install the
+new plugin.
+
+## Configuration
 
 By default, you need to have [evince][] or [okular][] installed as pdf viewers.
 But you can specify your own viewer by setting `g:livepreview_previewer`
 option in your `.vimrc`:
 
-    let g:livepreview_previewer = 'your_viewer'
+```vim
+let g:livepreview_previewer = 'your_viewer'
+```
 
 Please note that not every pdf viewer could work with this plugin. Currently
 evince and okular are known to work well. You can find a list of known working
