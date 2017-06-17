@@ -104,6 +104,7 @@ EEOOFF
                 \ b:livepreview_buf_data['tmp_src_file'])
     if v:shell_error != 0
         echo 'Failed to compile'
+        lcd -
         return
     endif
 
@@ -128,6 +129,7 @@ EEOOFF
     endif
     if v:shell_error != 0
         echo 'Failed to compile bibliography'
+        lcd -
         return
     endif
 
