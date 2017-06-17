@@ -65,20 +65,7 @@ function! s:Compile()
 
     silent exec 'write! ' . b:livepreview_buf_data['tmp_src_file']
 
-    call s:RunInBackground(
-                \ 'env ' .
-                \       'TEXINPUTS=' . b:livepreview_buf_data['tmp_dir'] . ': ' .
-                \ 'pdflatex ' .
-                \       '-shell-escape ' .
-                \       '-interaction=nonstopmode ' .
-                \       '-output-directory=' . b:livepreview_buf_data['tmp_dir'] . ' ' .
-                \       b:livepreview_buf_data['root_file'])
-
-    if b:livepreview_buf_data['has_bibliography']
-        " ToDo: Make the following work in Windows
-        call system('cd ' .  b:livepreview_buf_data['tmp_dir'] .
-                    \ ' && bibtex *.aux')
-    endif
+    call s:RunInBackground(b:livepreview_buf_data['run_cmd'])
 
     lcd -
 endfunction
@@ -117,40 +104,41 @@ EEOOFF
     let l:tmp_out_file = b:livepreview_buf_data['tmp_dir'] . '/' .
                 \ fnameescape(fnamemodify(b:livepreview_buf_data['root_file'], ':t:r')) . '.pdf'
 
-    silent call system(
+    let b:livepreview_buf_data['run_cmd'] =
                 \ 'env ' .
                 \       'TEXINPUTS=' . b:livepreview_buf_data['tmp_dir'] . ': ' .
                 \ 'pdflatex ' .
                 \       '-shell-escape ' .
                 \       '-interaction=nonstopmode ' .
                 \       '-output-directory=' . b:livepreview_buf_data['tmp_dir'] . ' ' .
-                \       b:livepreview_buf_data['root_file'])
+                \       b:livepreview_buf_data['root_file']
+
+    silent call system(b:livepreview_buf_data['run_cmd'])
     if v:shell_error != 0
         echo 'Failed to compile'
     endif
 
     " Enable compilation of bibliography:
     let l:bib_files = split( glob( expand( '%:h' ) . '/**/*bib' ) )
-    let b:livepreview_buf_data['has_bibliography'] = 0
     if len( l:bib_files ) > 0
-        let b:livepreview_buf_data['has_bibliography'] = 1
         for bib_file in l:bib_files
             let bib_fn = fnamemodify(bib_file, ':t')
             call writefile(readfile(bib_file),
-                        \ b:livepreview_buf_data['tmp_dir'] . '/' . bib_fn )
+                        \ b:livepreview_buf_data['tmp_dir'] . '/' . bib_fn )    " TODO: may fail if same bibfile names in different dirs
         endfor
-        " ToDo: Make the following work in Windows
-        silent call system('cd ' . b:livepreview_buf_data['tmp_dir'] .
-                    \ ' && bibtex *.aux')
-        " Bibtex requires multiple latex compilations:
-        silent call system(
-                    \ 'env ' .
-                    \       'TEXINPUTS=' . b:livepreview_buf_data['tmp_dir'] . ': ' .
-                    \ 'pdflatex ' .
-                    \       '-shell-escape ' .
-                    \       '-interaction=nonstopmode ' .
-                    \       '-output-directory=' . b:livepreview_buf_data['tmp_dir'] . ' ' .
-                    \       b:livepreview_buf_data['root_file'])
+
+        " Update compile command with bibliography
+        let b:livepreview_buf_data['run_cmd'] =
+                \       b:livepreview_buf_data['run_cmd'] .
+                \ ' && ' .
+                \       'env TEXMFOUTPUT=' . b:livepreview_buf_data['tmp_dir'] . ' ' .
+                \       'bibtex ' . b:livepreview_buf_data['tmp_dir'] . '/*.aux' .
+                \ ' && ' .
+                \       b:livepreview_buf_data['run_cmd'] .
+                \ ' && ' .
+                \       b:livepreview_buf_data['run_cmd']
+
+        silent call system(b:livepreview_buf_data['run_cmd'])
     endif
     if v:shell_error != 0
         echo 'Failed to compile bibliography'
