@@ -43,7 +43,8 @@ case it is **relative to the parent directory of the current file**.
 
 ## Limitation
 
-Currently, all files must be in the same directory.
+Currently, root file must be in the same directory or upper in the project tree
+(otherwise, one has to save file to update the preview).
 
 ## Screenshot
 
