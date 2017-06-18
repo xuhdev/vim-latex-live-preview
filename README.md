@@ -47,6 +47,8 @@ Vim and you should see the live update. The updating time could be set by Vim's
 ['updatetime'][] option. If your pdf viewer crashes when updates happen, you can
 try to set 'updatetime' to a higher value to make it update less frequently. The
 suggested value of 'updatetime' is `1000`.
+ 
+this version automatically includes synctex support, you can double click the pdf file to inverse search to the location of you tex file.
 
 ## Screenshot
 
