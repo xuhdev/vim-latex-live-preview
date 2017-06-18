@@ -94,9 +94,9 @@ EEOOFF
     let l:root_line = substitute(getline(1),
                 \ '\v^\s*\%\s*!tex\s*root\s*\=\s*(.*)\s*$',
                 \ '\1', '')
-    if ( a:0 > 0 )
+    if (a:0 > 0)
         let l:root_file = fnameescape(fnamemodify(a:1, ':p'))
-    elseif ( l:root_line != getline(1) && strlen(l:root_line) > 0 )                     " TODO: existence of `% !TEX` declaration condition must be clean...
+    elseif (l:root_line != getline(1) && strlen(l:root_line) > 0)                       " TODO: existence of `% !TEX` declaration condition must be clean...
         let l:root_file = fnameescape(fnamemodify(l:root_line, ':p'))
     else
         let l:root_file = b:livepreview_buf_data['tmp_src_file']
@@ -106,26 +106,25 @@ EEOOFF
     " Build tree for tmp_src_file (copy of the current buffer)
     let l:tmp_src_dir = fnameescape(
                 \ fnamemodify(b:livepreview_buf_data['tmp_src_file'], ':p:h'))
-    if ( !isdirectory(l:tmp_src_dir) )
+    if (!isdirectory(l:tmp_src_dir))
         silent call mkdir(l:tmp_src_dir, 'p')
     endif
     " Build tree for root_file (main tex file, which might be tmp_src_file,
     " ie. the current file)
-    if ( l:root_file == b:livepreview_buf_data['tmp_src_file'] )                        " if root file is the current file
+    if (l:root_file == b:livepreview_buf_data['tmp_src_file'])                          " if root file is the current file
         let l:tmp_root_dir = l:tmp_src_dir
     else
-         let l:tmp_root_dir = fnameescape(
-                     \ b:livepreview_buf_data['tmp_dir'] .
-                     \ fnamemodify(l:root_file, ':p:h'))
-         if ( !isdirectory(l:tmp_root_dir) )
-             silent call mkdir(l:tmp_root_dir, 'p')
-         endif
-     endif
-
+        let l:tmp_root_dir = fnameescape(
+                    \ b:livepreview_buf_data['tmp_dir'] .
+                    \ fnamemodify(l:root_file, ':p:h'))
+        if (!isdirectory(l:tmp_root_dir))
+            silent call mkdir(l:tmp_root_dir, 'p')
+        endif
+    endif
 
     " Change directory to handle properly sourced files with \input and bib
     " TODO: get rid of lcd
-    if ( l:root_file == b:livepreview_buf_data['tmp_src_file'] )                        " if root file is the current file
+    if (l:root_file == b:livepreview_buf_data['tmp_src_file'])                          " if root file is the current file
         let b:livepreview_buf_data['root_dir'] = fnameescape(expand('%:p:h'))
     else
         let b:livepreview_buf_data['root_dir'] = fnameescape(
@@ -158,12 +157,12 @@ EEOOFF
     endif
 
     " Enable compilation of bibliography:
-    let l:bib_files = split( glob( expand( '%:h' ) . '/**/*.bib' ) )                    " TODO: fails if unused bibfiles
-    if len( l:bib_files ) > 0
+    let l:bib_files = split(glob(expand('%:h') . '/**/*.bib'))                          " TODO: fails if unused bibfiles
+    if len(l:bib_files) > 0
         for bib_file in l:bib_files
             let bib_fn = fnamemodify(bib_file, ':t')
             call writefile(readfile(bib_file),
-                        \ l:tmp_root_dir . '/' . bib_fn )                               " TODO: may fail if same bibfile names in different dirs
+                        \ l:tmp_root_dir . '/' . bib_fn)                                " TODO: may fail if same bibfile names in different dirs
         endfor
 
         " Update compile command with bibliography
