@@ -83,7 +83,7 @@ EEOOFF
 
     let b:livepreview_buf_data['tmp_src_file'] =
                 \ b:livepreview_buf_data['tmp_dir'] . '/' .
-                \ fnameescape(expand('%:r')) . '.' . expand('%:e')
+                \ fnameescape(expand('%:r') . '.' . expand('%:e'))
 
     " Guess the root file which will be compiled, using first the argument
     " passed, then the first line declaration of the source file and
@@ -102,7 +102,7 @@ EEOOFF
     silent exec 'write! ' . b:livepreview_buf_data['tmp_src_file']
 
     let l:tmp_out_file = b:livepreview_buf_data['tmp_dir'] . '/' .
-                \ fnameescape(fnamemodify(b:livepreview_buf_data['root_file'], ':t:r')) . '.pdf'
+                \ fnameescape(fnamemodify(b:livepreview_buf_data['root_file'], ':t:r') . '.pdf')
 
     let b:livepreview_buf_data['run_cmd'] =
                 \ 'env ' .
