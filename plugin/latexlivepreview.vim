@@ -20,14 +20,15 @@ if v:version < 700
     finish
 endif
 
-" check whether this script is already loaded
+" Check whether this script is already loaded
 if exists("g:loaded_vim_live_preview")
     finish
 endif
 let g:loaded_vim_live_preview = 1
 
-" this plugin requires +python feature
-if !has('python')
+" This plugin requires +python and mkdir features
+" TODO: print an error message
+if (!has('python') || !exists("*mkdir"))
     finish
 endif
 
@@ -61,47 +62,96 @@ function! s:Compile()
         return
     endif
 
-    lcd %:p:h
+    " Change directory to handle properly sourced files with \input and bib
+    " TODO: get rid of lcd
+    execute 'lcd ' . b:livepreview_buf_data['root_dir']
 
+    " Write the current buffer in a temporary file
     silent exec 'write! ' . b:livepreview_buf_data['tmp_src_file']
 
-    call s:RunInBackground(
-                \ 'pdflatex -shell-escape -interaction=nonstopmode -output-directory=' .
-                \ b:livepreview_buf_data['tmp_dir'] . ' ' .
-                \ b:livepreview_buf_data['tmp_src_file'])
-
-    if b:livepreview_buf_data['has_bibliography']
-        " ToDo: Make the following work in Windows
-        call system('cd ' .  b:livepreview_buf_data['tmp_dir'] .
-                    \ ' && bibtex *.aux')
-    endif
+    call s:RunInBackground(b:livepreview_buf_data['run_cmd'])
 
     lcd -
 endfunction
 
-function! s:StartPreview()
-    lcd %:p:h
-    
+function! s:StartPreview(...)
     let b:livepreview_buf_data = {}
 
     " Create a temp directory for current buffer
     python << EEOOFF
 vim.command("let b:livepreview_buf_data['tmp_dir'] = '" +
-        tempfile.mkdtemp() + "'")
+        tempfile.mkdtemp(prefix="vim-latex-live-preview-") + "'")
 EEOOFF
 
     let b:livepreview_buf_data['tmp_src_file'] =
-                \ b:livepreview_buf_data['tmp_dir'] . '/' .
-                \ fnameescape(expand('%:r')) . '.' . expand('%:e')
+                \ b:livepreview_buf_data['tmp_dir'] .
+                \ fnameescape(expand('%:p:r') . '.' . expand('%:e'))
 
+    " Guess the root file which will be compiled, using first the argument
+    " passed, then the first line declaration of the source file and
+    " eventually fallback to the current file.
+    " TODO: emulate -parse-first-line properly
+    let l:root_line = substitute(getline(1),
+                \ '\v^\s*\%\s*!tex\s*root\s*\=\s*(.*)\s*$',
+                \ '\1', '')
+    if (a:0 > 0)
+        let l:root_file = fnameescape(fnamemodify(a:1, ':p'))
+    elseif (l:root_line != getline(1) && strlen(l:root_line) > 0)                       " TODO: existence of `% !TEX` declaration condition must be clean...
+        let l:root_file = fnameescape(fnamemodify(l:root_line, ':p'))
+    else
+        let l:root_file = b:livepreview_buf_data['tmp_src_file']
+    endif
+
+    " Hack for complex project trees: recreate the tree in tmp_dir
+    " Build tree for tmp_src_file (copy of the current buffer)
+    let l:tmp_src_dir = fnameescape(
+                \ fnamemodify(b:livepreview_buf_data['tmp_src_file'], ':p:h'))
+    if (!isdirectory(l:tmp_src_dir))
+        silent call mkdir(l:tmp_src_dir, 'p')
+    endif
+    " Build tree for root_file (main tex file, which might be tmp_src_file,
+    " ie. the current file)
+    if (l:root_file == b:livepreview_buf_data['tmp_src_file'])                          " if root file is the current file
+        let l:tmp_root_dir = l:tmp_src_dir
+    else
+        let l:tmp_root_dir = fnameescape(
+                    \ b:livepreview_buf_data['tmp_dir'] .
+                    \ fnamemodify(l:root_file, ':p:h'))
+        if (!isdirectory(l:tmp_root_dir))
+            silent call mkdir(l:tmp_root_dir, 'p')
+        endif
+    endif
+
+    " Change directory to handle properly sourced files with \input and bib
+    " TODO: get rid of lcd
+    if (l:root_file == b:livepreview_buf_data['tmp_src_file'])                          " if root file is the current file
+        let b:livepreview_buf_data['root_dir'] = fnameescape(expand('%:p:h'))
+    else
+        let b:livepreview_buf_data['root_dir'] = fnameescape(
+                \ fnamemodify(l:root_file, ':p:h'))
+    endif
+    execute 'lcd ' . b:livepreview_buf_data['root_dir']
+
+    " Write the current buffer in a temporary file
     silent exec 'write! ' . b:livepreview_buf_data['tmp_src_file']
 
-    let l:tmp_out_file = b:livepreview_buf_data['tmp_dir'] . '/' .
-                \ fnameescape(expand('%:r')) . '.pdf'
+    let l:tmp_out_file = l:tmp_root_dir . '/' .
+                \ fnameescape(fnamemodify(l:root_file, ':t:r') . '.pdf')
 
-    silent call system('pdflatex -shell-escape -interaction=nonstopmode -output-directory=' .
-                \ b:livepreview_buf_data['tmp_dir'] . ' ' .
-                \ b:livepreview_buf_data['tmp_src_file'])
+    let b:livepreview_buf_data['run_cmd'] =
+                \ 'env ' .
+                \       'TEXMFOUTPUT=' . l:tmp_root_dir . ' ' .
+                \       'TEXINPUTS=' . l:tmp_root_dir
+                \                    . ':' . b:livepreview_buf_data['root_dir']
+                \                    . ': ' .
+                \ 'pdflatex ' .
+                \       '-shell-escape ' .
+                \       '-interaction=nonstopmode ' .
+                \       '-output-directory=' . l:tmp_root_dir . ' ' .
+                \       l:root_file
+                " lcd can be avoided thanks to root_dir in TEXINPUTS
+
+    silent call system(b:livepreview_buf_data['run_cmd'])
     if v:shell_error != 0
         echo 'Failed to compile'
         lcd -
@@ -109,23 +159,26 @@ EEOOFF
     endif
 
     " Enable compilation of bibliography:
-    let l:bib_files = split( glob( expand( '%:h' ) . '/**/*bib' ) )
-    let b:livepreview_buf_data['has_bibliography'] = 0
-    if len( l:bib_files ) > 0
-        let b:livepreview_buf_data['has_bibliography'] = 1
+    let l:bib_files = split(glob(expand('%:h') . '/**/*.bib'))                          " TODO: fails if unused bibfiles
+    if len(l:bib_files) > 0
         for bib_file in l:bib_files
             let bib_fn = fnamemodify(bib_file, ':t')
             call writefile(readfile(bib_file),
-                        \ b:livepreview_buf_data['tmp_dir'] . '/' . bib_fn )
+                        \ l:tmp_root_dir . '/' . bib_fn)                                " TODO: may fail if same bibfile names in different dirs
         endfor
-        " ToDo: Make the following work in Windows
-        silent call system('cd ' . b:livepreview_buf_data['tmp_dir'] .
-                    \ ' && bibtex *.aux')
-        " Bibtex requires multiple latex compilations:
-        silent call system(
-                    \ 'pdflatex -shell-escape -interaction=nonstopmode -output-directory=' .
-                    \ b:livepreview_buf_data['tmp_dir'] . ' ' .
-                    \ b:livepreview_buf_data['tmp_src_file'])
+
+        " Update compile command with bibliography
+        let b:livepreview_buf_data['run_cmd'] =
+                \       'env ' .
+                \               'TEXMFOUTPUT=' . l:tmp_root_dir . ' ' .
+                \               'TEXINPUTS=' . l:tmp_root_dir
+                \                            . ':' . b:livepreview_buf_data['root_dir']
+                \                            . ': ' .
+                \       'bibtex ' . l:tmp_root_dir . '/*.aux' .
+                \ ' && ' .
+                \       b:livepreview_buf_data['run_cmd']
+
+        silent call system(b:livepreview_buf_data['run_cmd'])
     endif
     if v:shell_error != 0
         echo 'Failed to compile bibliography'
@@ -136,7 +189,7 @@ EEOOFF
     call s:RunInBackground(s:previewer . ' ' . l:tmp_out_file)
 
     lcd -
-    
+
     let b:livepreview_buf_data['preview_running'] = 1
 endfunction
 
@@ -185,7 +238,7 @@ endif
 
 unlet! s:init_msg
 
-command! LLPStartPreview call s:StartPreview()
+command! -nargs=* LLPStartPreview call s:StartPreview(<f-args>)
 
 autocmd CursorHold,CursorHoldI,BufWritePost *.tex call s:Compile()
 
