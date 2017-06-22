@@ -28,6 +28,8 @@ new plugin.
 
 ## Configuration
 
+### PDF viewer
+
 By default, you need to have [evince][] or [okular][] installed as pdf viewers.
 But you can specify your own viewer by setting `g:livepreview_previewer`
 option in your `.vimrc`:
@@ -39,6 +41,16 @@ let g:livepreview_previewer = 'your_viewer'
 Please note that not every pdf viewer could work with this plugin. Currently
 evince and okular are known to work well. You can find a list of known working
 pdf viewers [here](https://github.com/xuhdev/vim-latex-live-preview/wiki/Known-Working-PDF-Viewers).
+
+### TeX engine
+
+`LLP` uses `pdflatex` as default engine to output a PDF to be previewed. It
+fallbacks to `xelatex` if `pdflatex` is not present. These defaults can be
+overridden by setting `g:livepreview_engine` variable:
+
+```vim
+let g:livepreview_engine = 'your_engine' . ' [options]'
+```
 
 ## Usage
 

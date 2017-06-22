@@ -144,7 +144,7 @@ EEOOFF
                 \       'TEXINPUTS=' . l:tmp_root_dir
                 \                    . ':' . b:livepreview_buf_data['root_dir']
                 \                    . ': ' .
-                \ 'pdflatex ' .
+                \ s:engine . ' ' .
                 \       '-shell-escape ' .
                 \       '-interaction=nonstopmode ' .
                 \       '-output-directory=' . l:tmp_root_dir . ' ' .
@@ -208,6 +208,20 @@ EEOOFF
 
     if l:ret != 0
         return 'Python initialization failed.'
+    endif
+
+    " Get the tex engine
+    if exists('g:livepreview_engine')
+        let s:engine = g:livepreview_engine
+    else
+        for possible_engine in [
+                    \ 'pdflatex',
+                    \ 'xelatex']
+            if executable(possible_engine)
+                let s:engine = possible_engine
+                break
+            endif
+        endfor
     endif
 
     " Get the previewer
