@@ -8,23 +8,52 @@ you have any suggestions.
 
 ## Installation
 
-### Manually
-
 Before installation, you need to make sure your Vim version is later than 7.3,
-and is compiled with `+python` feature. Then copy `plugin/latexlivepreview.vim`
-to `~/.vim/plugin`.
+and is compiled with `+python` feature.
 
-### Vim-plug
+### [vim-plug](https://github.com/junegunn/vim-plug)
 
-In the `vim-plug` section of your `~/.vimrc`:
+Add the plugin in the vim-plug section of your `~/.vimrc`:
 
 ```vim
+call plug#begin('~/.vim/plugged')
+[...]
 " A Vim Plugin for Lively Previewing LaTeX PDF Output
 Plug 'xuhdev/vim-latex-live-preview'
+[...]
+call plug#end()
 ```
 
-Execute `:so ~/.vimrc` to reload the config and `:PlugInstall` to install the
-new plugin.
+Then reload the config and install the new plugin. Run inside `vim`:
+
+```vim
+:so ~/.vimrc
+:PlugInstall
+```
+
+### [Vundle](https://github.com/VundleVim/Vundle.vim)
+
+Add the plugin in the Vundle section of your `~/.vimrc`:
+
+```vim
+call vundle#begin()
+[...]
+" A Vim Plugin for Lively Previewing LaTeX PDF Output
+Plugin 'xuhdev/vim-latex-live-preview'
+[...]
+call vundle#end()
+```
+
+Then reload the config and install the new plugin. Run inside `vim`:
+
+```vim
+:so ~/.vimrc
+:PluginInstall
+```
+
+### Manually
+
+Copy `plugin/latexlivepreview.vim` to `~/.vim/plugin`.
 
 ## Configuration
 
