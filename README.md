@@ -122,10 +122,10 @@ Currently, root file must be in the same directory or upper in the project tree
 Screenshot
 ----------
 
-![Screenshot with Evince](https://github.com/xuhdev/vim-latex-live-preview/raw/master/screenshots/screenshot-evince.gif)
+![Screenshot with Evince](misc/screenshot-evince.gif)
 
 <!--
-The screenshot is at ./screenshots/screenshot-evince.gif
+The screenshot is at ./misc/screenshot-evince.gif
 -->
 
 ['updatetime']: http://vimdoc.sourceforge.net/htmldoc/options.html#%27updatetime%27
