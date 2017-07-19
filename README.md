@@ -13,7 +13,7 @@ Table of Contents
 - [Installation](#installation)
 - [Usage](#usage)
 - [Configuration](#configuration)
-- [Limitation](#limitation)
+- [Known issues](#known-issues)
 - [Screenshot](#screenshot)
 
 Installation
@@ -113,8 +113,16 @@ overridden by setting `g:livepreview_engine` variable:
 let g:livepreview_engine = 'your_engine' . ' [options]'
 ```
 
-Limitation
-----------
+Known issues
+------------
+
+### Swap error
+
+An error `E768: Swap file exists` may occur. See
+[issue #7](https://github.com/xuhdev/vim-latex-live-preview/issues/7) to avoid
+swap filename collision.
+
+### Project tree
 
 Currently, root file must be in the same directory or upper in the project tree
 (otherwise, one has to save file to update the preview).
