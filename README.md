@@ -1,4 +1,5 @@
-# A Vim Plugin for Lively Previewing LaTeX PDF Output
+A Vim Plugin for Lively Previewing LaTeX PDF Output
+===================================================
 
 This plugin provides a live preview of the output PDF of your LaTeX file. The
 display of the output PDF file will be updated lively as you type (just hold
@@ -6,9 +7,19 @@ the cursor and you will see the PDF file updated). Currently,
 vim-latex-live-preview only support UNIX-like systems. Please let me know if
 you have any suggestions.
 
-## Installation
+Table of Contents
+-----------------
 
-Before installation, you need to make sure your Vim version is later than 7.3,
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Limitation](#limitation)
+- [Screenshot](#screenshot)
+
+Installation
+------------
+
+Before installing, you need to make sure your Vim version is later than 7.3,
 and is compiled with `+python` feature.
 
 ### [vim-plug](https://github.com/junegunn/vim-plug)
@@ -55,7 +66,28 @@ Then reload the config and install the new plugin. Run inside `vim`:
 
 Copy `plugin/latexlivepreview.vim` to `~/.vim/plugin`.
 
-## Configuration
+Usage
+-----
+
+Simply execute `:LLPStartPreview` to launch the previewer. Then try to type in
+Vim and you should see the live update. The updating time could be set by Vim's
+['updatetime'][] option. If your pdf viewer crashes when updates happen, you can
+try to set 'updatetime' to a higher value to make it update less frequently. The
+suggested value of 'updatetime' is `1000`.
+
+If the root file is not the file you are currently editing, you can specify it
+by executing `:LLPStartPreview <root-filename>` or executing `:LLPStartPreview`
+with the following declaration in the first line of your source file:
+
+```latex
+% !TEX root = <root-filename>
+```
+
+The path to the root file can be an absolute path or a relative path, in which
+case it is **relative to the parent directory of the current file**.
+
+Configuration
+-------------
 
 ### PDF viewer
 
@@ -81,31 +113,14 @@ overridden by setting `g:livepreview_engine` variable:
 let g:livepreview_engine = 'your_engine' . ' [options]'
 ```
 
-## Usage
-
-Simply execute `:LLPStartPreview` to launch the previewer. Then try to type in
-Vim and you should see the live update. The updating time could be set by Vim's
-['updatetime'][] option. If your pdf viewer crashes when updates happen, you can
-try to set 'updatetime' to a higher value to make it update less frequently. The
-suggested value of 'updatetime' is `1000`.
-
-If the root file is not the file you are currently editing, you can specify it
-by executing `:LLPStartPreview <root-filename>` or executing `:LLPStartPreview`
-with the following declaration in the first line of your source file:
-
-```latex
-% !TEX root = <root-filename>
-```
-
-The path to the root file can be an absolute path or a relative path, in which
-case it is **relative to the parent directory of the current file**.
-
-## Limitation
+Limitation
+----------
 
 Currently, root file must be in the same directory or upper in the project tree
 (otherwise, one has to save file to update the preview).
 
-## Screenshot
+Screenshot
+----------
 
 ![Screenshot with Evince](https://github.com/xuhdev/vim-latex-live-preview/raw/master/screenshots/screenshot-evince.gif)
 
