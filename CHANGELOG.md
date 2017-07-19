@@ -3,8 +3,8 @@ Unreleased
 
 ### Added
 
-- Support bibliography
 - Support multiple files project
+- Support bibliography
 
 ### Fixed
 
