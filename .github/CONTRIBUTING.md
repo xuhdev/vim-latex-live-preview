@@ -5,7 +5,7 @@ Hey! If you are reading this, that means you may want to contribute to this proj
 
 There are several ways to contribute, and all of them are essential to make the best vim latex live preview plugin ever.
 
-You may have run into a bug or you may have a idea on how to enhance the plugin. Feel free to open an
+You may have run into a bug or you may have an idea on how to enhance the plugin. Feel free to open an
 [issue](https://github.com/xuhdev/vim-latex-live-preview/issues) or to add a comment to an existing one.
 
 You may want to write a fix or implement a new feature. Please do so and open a [pull
