@@ -132,11 +132,11 @@ Check Issue [#12](https://github.com/xuhdev/vim-latex-live-preview/issues/12), p
 
 ### Python-related Issues 
 
-* 2.7 vs 3.5 
-This is an ongoing issue: [#12](https://github.com/xuhdev/vim-latex-live-preview)
+* 2.7 vs 3.5: 
+This is an ongoing issue: [#12](https://github.com/xuhdev/vim-latex-live-preview/issues/12)
 
-* dyn/python
-See Issue [#24](https://github.com/xuhdev/vim-latex-live-preview/issues/24), currently ```vim-latex-live-preview``` does not support ```dyn/python``` and Vim must be recompiled with Python support. 
+* python/dyn
+See Issue [#24](https://github.com/xuhdev/vim-latex-live-preview/issues/24), currently ```vim-latex-live-preview``` does not support ```python/dyn``` and Vim must be recompiled with Python support. 
 
 
 Screenshot
