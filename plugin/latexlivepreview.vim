@@ -85,7 +85,7 @@ EEOOFF
 
     let b:livepreview_buf_data['tmp_src_file'] =
                 \ b:livepreview_buf_data['tmp_dir'] .
-                \ fnameescape(expand('%:p:r') . '.' . expand('%:e'))
+                \ expand('%:p:r') . '.' . expand('%:e')
 
     " Guess the root file which will be compiled, using first the argument
     " passed, then the first line declaration of the source file and
@@ -95,17 +95,16 @@ EEOOFF
                 \ '\v^\s*\%\s*!tex\s*root\s*\=\s*(.*)\s*$',
                 \ '\1', '')
     if (a:0 > 0)
-        let l:root_file = fnameescape(fnamemodify(a:1, ':p'))
-    elseif (l:root_line != getline(1) && strlen(l:root_line) > 0)                       " TODO: existence of `% !TEX` declaration condition must be clean...
-        let l:root_file = fnameescape(fnamemodify(l:root_line, ':p'))
+        let l:root_file = fnamemodify(a:1, ':p')
+    elseif (l:root_line != getline(1) && strlen(l:root_line) > 0)                       " TODO: existence of `% !TEX` declaration condition must be cleaned...
+        let l:root_file = fnamemodify(l:root_line, ':p')
     else
         let l:root_file = b:livepreview_buf_data['tmp_src_file']
     endif
 
     " Hack for complex project trees: recreate the tree in tmp_dir
     " Build tree for tmp_src_file (copy of the current buffer)
-    let l:tmp_src_dir = fnameescape(
-                \ fnamemodify(b:livepreview_buf_data['tmp_src_file'], ':p:h'))
+    let l:tmp_src_dir = fnamemodify(b:livepreview_buf_data['tmp_src_file'], ':p:h')
     if (!isdirectory(l:tmp_src_dir))
         silent call mkdir(l:tmp_src_dir, 'p')
     endif
@@ -114,21 +113,24 @@ EEOOFF
     if (l:root_file == b:livepreview_buf_data['tmp_src_file'])                          " if root file is the current file
         let l:tmp_root_dir = l:tmp_src_dir
     else
-        let l:tmp_root_dir = fnameescape(
-                    \ b:livepreview_buf_data['tmp_dir'] .
-                    \ fnamemodify(l:root_file, ':p:h'))
+        let l:tmp_root_dir = b:livepreview_buf_data['tmp_dir'] . fnamemodify(l:root_file, ':p:h')
         if (!isdirectory(l:tmp_root_dir))
             silent call mkdir(l:tmp_root_dir, 'p')
         endif
     endif
+
+    " Escape pathnames
+    let l:root_file = fnameescape(l:root_file)
+    let l:tmp_root_dir = fnameescape(l:tmp_root_dir)
+    let b:livepreview_buf_data['tmp_dir'] = fnameescape(b:livepreview_buf_data['tmp_dir'])
+    let b:livepreview_buf_data['tmp_src_file'] = fnameescape(b:livepreview_buf_data['tmp_src_file'])
 
     " Change directory to handle properly sourced files with \input and bib
     " TODO: get rid of lcd
     if (l:root_file == b:livepreview_buf_data['tmp_src_file'])                          " if root file is the current file
         let b:livepreview_buf_data['root_dir'] = fnameescape(expand('%:p:h'))
     else
-        let b:livepreview_buf_data['root_dir'] = fnameescape(
-                \ fnamemodify(l:root_file, ':p:h'))
+        let b:livepreview_buf_data['root_dir'] = fnamemodify(l:root_file, ':p:h')
     endif
     execute 'lcd ' . b:livepreview_buf_data['root_dir']
 
@@ -136,7 +138,7 @@ EEOOFF
     silent exec 'write! ' . b:livepreview_buf_data['tmp_src_file']
 
     let l:tmp_out_file = l:tmp_root_dir . '/' .
-                \ fnameescape(fnamemodify(l:root_file, ':t:r') . '.pdf')
+                \ fnamemodify(l:root_file, ':t:r') . '.pdf'
 
     let b:livepreview_buf_data['run_cmd'] =
                 \ 'env ' .
@@ -214,9 +216,7 @@ EEOOFF
     if exists('g:livepreview_engine')
         let s:engine = g:livepreview_engine
     else
-        for possible_engine in [
-                    \ 'pdflatex',
-                    \ 'xelatex']
+        for possible_engine in ['pdflatex', 'xelatex']
             if executable(possible_engine)
                 let s:engine = possible_engine
                 break
@@ -228,9 +228,7 @@ EEOOFF
     if exists('g:livepreview_previewer')
         let s:previewer = g:livepreview_previewer
     else
-        for possible_previewer in [
-                    \ 'evince',
-                    \ 'okular']
+        for possible_previewer in ['evince', 'okular']
             if executable(possible_previewer)
                 let s:previewer = possible_previewer
                 break

@@ -86,6 +86,9 @@ with the following declaration in the first line of your source file:
 The path to the root file can be an absolute path or a relative path, in which
 case it is **relative to the parent directory of the current file**.
 
+:warning: if `<root-filename>` contains special characters (such as space), they
+must be escaped manually.
+
 Configuration
 -------------
 
