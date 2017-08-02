@@ -161,7 +161,7 @@ EEOOFF
     endif
 
     " Enable compilation of bibliography:
-    let l:bib_files = split(glob(expand('%:h') . '/**/*.bib'))                          " TODO: fails if unused bibfiles
+    let l:bib_files = split(glob(b:livepreview_buf_data['root_dir'] . '/**/*.bib'))     " TODO: fails if unused bibfiles
     if len(l:bib_files) > 0
         for bib_file in l:bib_files
             let bib_fn = fnamemodify(bib_file, ':t')
