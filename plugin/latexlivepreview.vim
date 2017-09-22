@@ -26,9 +26,23 @@ if exists("g:loaded_vim_live_preview")
 endif
 let g:loaded_vim_live_preview = 1
 
-" This plugin requires +python and mkdir features
-" TODO: print an error message
-if (!has('python') || !exists("*mkdir"))
+" Check mkdir feature
+if (!exists("*mkdir"))
+    echohl ErrorMsg
+    echo 'vim-llp: mkdir required'
+    echohl None
+    finish
+endif
+
+" Setup python
+if (has('python3'))
+    let s:py_exe = 'python3'
+elseif (has('python'))
+    let s:py_exe = 'python'
+else
+    echohl ErrorMsg
+    echo 'vim-llp: python required'
+    echohl None
     finish
 endif
 
@@ -40,7 +54,7 @@ let s:previewer = ''
 " Run a shell command in background
 function! s:RunInBackground(cmd)
 
-python << EEOOFF
+execute s:py_exe "<< EEOOFF"
 
 try:
     subprocess.Popen(
@@ -77,8 +91,10 @@ endfunction
 function! s:StartPreview(...)
     let b:livepreview_buf_data = {}
 
+    let b:livepreview_buf_data['py_exe'] = s:py_exe
+
     " Create a temp directory for current buffer
-    python << EEOOFF
+    execute s:py_exe "<< EEOOFF"
 vim.command("let b:livepreview_buf_data['tmp_dir'] = '" +
         tempfile.mkdtemp(prefix="vim-latex-live-preview-") + "'")
 EEOOFF
@@ -198,7 +214,7 @@ endfunction
 " Initialization code
 function! s:Initialize()
     let l:ret = 0
-    python << EEOOFF
+    execute s:py_exe "<< EEOOFF"
 try:
     import vim
     import tempfile
