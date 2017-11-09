@@ -71,8 +71,7 @@ endfunction
 function! s:Compile()
 
     if !exists('b:livepreview_buf_data') ||
-                \ has_key(b:livepreview_buf_data, 'preview_running') == 0 ||
-                \ b:livepreview_buf_data['preview_running'] == 0
+                \ has_key(b:livepreview_buf_data, 'preview_running') == 0
         return
     endif
 
@@ -268,7 +267,7 @@ unlet! s:init_msg
 
 command! -nargs=* LLPStartPreview call s:StartPreview(<f-args>)
 
-autocmd CursorHold,CursorHoldI,BufWritePost *.tex call s:Compile()
+autocmd CursorHold,CursorHoldI,BufWritePost * call s:Compile()
 
 let &cpo = s:saved_cpo
 unlet! s:saved_cpo

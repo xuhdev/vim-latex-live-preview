@@ -30,7 +30,7 @@ Add the plugin in the vim-plug section of your `~/.vimrc`:
 call plug#begin('~/.vim/plugged')
 [...]
 " A Vim Plugin for Lively Previewing LaTeX PDF Output
-Plug 'xuhdev/vim-latex-live-preview'
+Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }
 [...]
 call plug#end()
 ```
