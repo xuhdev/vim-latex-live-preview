@@ -101,7 +101,7 @@ EEOOFF
 
     let b:livepreview_buf_data['tmp_src_file'] =
                 \ b:livepreview_buf_data['tmp_dir'] .
-                \ expand('%:p:r') . '.' . expand('%:e')
+                \ expand('%:p:r')
 
     " Guess the root file which will be compiled, using first the argument
     " passed, then the first line declaration of the source file and
