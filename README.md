@@ -7,20 +7,21 @@ the cursor and you will see the PDF file updated). Currently,
 vim-latex-live-preview only support UNIX-like systems. [Please let me know if
 you have any suggestions.](.github/CONTRIBUTING.md)
 
-Table of Contents
------------------
+![Screenshot with Evince](misc/screenshot-evince.gif)
+
+## Table of Contents
 
 - [Installation](#installation)
 - [Usage](#usage)
 - [Configuration](#configuration)
-- [Known issues](#known-issues)
-- [Screenshot](#screenshot)
+- [Known Issues](#known-issues)
+- [Contributing](#contributing)
+- [Release History](#release-history)
 
-Installation
-------------
+# Installation
 
 Before installing, you need to make sure your Vim version is later than 7.3,
-and is compiled with `+python` feature.
+and is [compiled](https://github.com/Valloric/YouCompleteMe/wiki/Building-Vim-from-source) with `+python` feature.
 
 ### [vim-plug](https://github.com/junegunn/vim-plug)
 
@@ -66,8 +67,8 @@ Then reload the config and install the new plugin. Run inside `vim`:
 
 Copy `plugin/latexlivepreview.vim` to `~/.vim/plugin`.
 
-Usage
------
+# Usage
+
 
 Simply execute `:LLPStartPreview` to launch the previewer. Then try to type in
 Vim and you should see the live update. The updating time could be set by Vim's
@@ -89,10 +90,10 @@ case it is **relative to the parent directory of the current file**.
 :warning: if `<root-filename>` contains special characters (such as space), they
 must be escaped manually.
 
-Configuration
--------------
+# Configuration
 
-### PDF viewer
+
+### PDF Viewer
 
 By default, you need to have [evince][] or [okular][] installed as pdf viewers.
 But you can specify your own viewer by setting `g:livepreview_previewer`
@@ -106,7 +107,7 @@ Please note that not every pdf viewer could work with this plugin. Currently
 evince and okular are known to work well. You can find a list of known working
 pdf viewers [here](https://github.com/xuhdev/vim-latex-live-preview/wiki/Known-Working-PDF-Viewers).
 
-### TeX engine
+### TeX Engine
 
 `LLP` uses `pdflatex` as default engine to output a PDF to be previewed. It
 fallbacks to `xelatex` if `pdflatex` is not present. These defaults can be
@@ -116,16 +117,16 @@ overridden by setting `g:livepreview_engine` variable:
 let g:livepreview_engine = 'your_engine' . ' [options]'
 ```
 
-Known issues
-------------
+# Known Issues
 
-### Swap error
+
+### Swap Error
 
 An error `E768: Swap file exists` may occur. See
 [issue #7](https://github.com/xuhdev/vim-latex-live-preview/issues/7) to avoid
 swap filename collision.
 
-### Project tree
+### Project Tree
 
 Currently, root file must be in the same directory or upper in the project tree
 (otherwise, one has to save file to update the preview).
@@ -141,11 +142,36 @@ This is an ongoing issue: [#12](https://github.com/xuhdev/vim-latex-live-preview
 * python/dyn
 See Issue [#24](https://github.com/xuhdev/vim-latex-live-preview/issues/24), currently ```vim-latex-live-preview``` does not support ```python/dyn``` and Vim must be recompiled with Python support. 
 
+## Release History
+### Added
 
-Screenshot
-----------
+- [[`e33ee6c`](https://github.com/xuhdev/vim-latex-live-preview/commit/e33ee6c)] - Support multiple files project [#26](https://github.com/xuhdev/vim-latex-live-preview/pull/26)
+- [[`bf5259b`](https://github.com/xuhdev/vim-latex-live-preview/commit/bf5259b)] - Support bibliography [#3](https://github.com/xuhdev/vim-latex-live-preview/pull/3)
 
-![Screenshot with Evince](misc/screenshot-evince.gif)
+### Fixed
+
+- [[`cbf5a1d`](https://github.com/xuhdev/vim-latex-live-preview/commit/cbf5a1d)] - Support paths and filenames containing spaces [#35](https://github.com/xuhdev/vim-latex-live-preview/issues/35)
+- [[`8cdc672`](https://github.com/xuhdev/vim-latex-live-preview/commit/8cdc672)] - Early exit on compilation failure [#25](https://github.com/xuhdev/vim-latex-live-preview/pull/25)
+
+0.1.0 (Apr 16, 2013)
+- First release
+
+
+## Contributing
+
+1. Fork it (<https://github.com/yourname/yourproject/fork>)
+2. Create your feature branch (`git checkout -b feature/fooBar`)
+3. Commit your changes (`git commit -am 'Add some fooBar'`)
+4. Push to the branch (`git push origin feature/fooBar`)
+5. Create a new Pull Request
+
+
+
+
+
+
+
+
 
 <!--
 The screenshot is at ./misc/screenshot-evince.gif
