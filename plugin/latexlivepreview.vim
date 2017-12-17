@@ -41,7 +41,7 @@ elseif (has('python'))
     let s:py_exe = 'python'
 else
     echohl ErrorMsg
-    echo 'vim-latex-live-preview: mkdir required'
+    echo 'vim-latex-live-preview: python required'
     echohl None
     finish
 endif
