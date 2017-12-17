@@ -29,7 +29,7 @@ let g:loaded_vim_live_preview = 1
 " Check mkdir feature
 if (!exists("*mkdir"))
     echohl ErrorMsg
-    echo 'vim-llp: mkdir required'
+    echo 'vim-latex-live-preview: mkdir required'
     echohl None
     finish
 endif
@@ -41,7 +41,7 @@ elseif (has('python'))
     let s:py_exe = 'python'
 else
     echohl ErrorMsg
-    echo 'vim-llp: python required'
+    echo 'vim-latex-live-preview: mkdir required'
     echohl None
     finish
 endif
