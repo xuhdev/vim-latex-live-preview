@@ -267,7 +267,11 @@ unlet! s:init_msg
 
 command! -nargs=* LLPStartPreview call s:StartPreview(<f-args>)
 
-autocmd CursorHold,CursorHoldI,BufWritePost * call s:Compile()
+if get(g:, 'livepreview_cursorhold_recompile', 1)
+    autocmd CursorHold,CursorHoldI,BufWritePost * call s:Compile()
+else
+    autocmd BufWritePost * call s:Compile()
+endif
 
 let &cpo = s:saved_cpo
 unlet! s:saved_cpo
