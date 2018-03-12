@@ -207,6 +207,10 @@ EEOOFF
 
     lcd -
 
+    if s:previewer == 'mupdf'
+        let b:livepreview_buf_data['run_cmd'] .= ' && kill -s HUP $(pgrep mupdf)'
+    endif
+
     let b:livepreview_buf_data['preview_running'] = 1
 endfunction
 
