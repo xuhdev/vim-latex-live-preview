@@ -207,6 +207,12 @@ EEOOFF
 
     lcd -
 
+    " When using muPDF HUP signal should be sent in order to refresh the
+    " document preview
+    if s:previewer == 'mupdf' && executable('pkill')
+        let b:livepreview_buf_data['run_cmd'] .= ' && pkill --signal HUP mupdf'
+    endif
+
     let b:livepreview_buf_data['preview_running'] = 1
 endfunction
 
