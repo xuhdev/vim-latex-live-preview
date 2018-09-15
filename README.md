@@ -141,15 +141,15 @@ Currently, root file must be in the same directory or upper in the project tree
 (otherwise, one has to save file to update the preview).
 
 ### E492: Not an editor command: LLPStartPreview
-Check Issue [#12](https://github.com/xuhdev/vim-latex-live-preview/issues/12), provided the plugin is correctly installed, this is likely a **Python** issue.
 
-### Python-related Issues
+See [issue #12](https://github.com/xuhdev/vim-latex-live-preview/issues/12),
+provided the plugin is correctly installed, this is likely a **Python** issue.
 
-* 2.7 vs 3.5:
-This is an ongoing issue: [#12](https://github.com/xuhdev/vim-latex-live-preview/issues/12)
+### Python-related issues
 
-* python/dyn
-See Issue [#24](https://github.com/xuhdev/vim-latex-live-preview/issues/24), currently ```vim-latex-live-preview``` does not support ```python/dyn``` and Vim must be recompiled with Python support.
+See [issue #24](https://github.com/xuhdev/vim-latex-live-preview/issues/24),
+currently ```vim-latex-live-preview``` does not support ```python/dyn``` and Vim
+must be recompiled with Python support.
 
 
 Screenshot
