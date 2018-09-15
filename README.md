@@ -116,6 +116,16 @@ overridden by setting `g:livepreview_engine` variable:
 let g:livepreview_engine = 'your_engine' . ' [options]'
 ```
 
+### Autocmd
+
+By default, the LaTeX sources will be recompiled each time the buffer is written
+to disk, but also when the cursor holds. To prevent recompilation on cursor
+hold (autocmd events `CursorHold` and `CursorHoldI`), use the feature flag:
+
+```vim
+let g:livepreview_cursorhold_recompile = 0
+```
+
 Known issues
 ------------
 
@@ -133,13 +143,13 @@ Currently, root file must be in the same directory or upper in the project tree
 ### E492: Not an editor command: LLPStartPreview
 Check Issue [#12](https://github.com/xuhdev/vim-latex-live-preview/issues/12), provided the plugin is correctly installed, this is likely a **Python** issue.
 
-### Python-related Issues 
+### Python-related Issues
 
-* 2.7 vs 3.5: 
+* 2.7 vs 3.5:
 This is an ongoing issue: [#12](https://github.com/xuhdev/vim-latex-live-preview/issues/12)
 
 * python/dyn
-See Issue [#24](https://github.com/xuhdev/vim-latex-live-preview/issues/24), currently ```vim-latex-live-preview``` does not support ```python/dyn``` and Vim must be recompiled with Python support. 
+See Issue [#24](https://github.com/xuhdev/vim-latex-live-preview/issues/24), currently ```vim-latex-live-preview``` does not support ```python/dyn``` and Vim must be recompiled with Python support.
 
 
 Screenshot
