@@ -107,7 +107,7 @@ EEOOFF
     " eventually fallback to the current file.
     " TODO: emulate -parse-first-line properly
     let l:root_line = substitute(getline(1),
-                \ '\v^\s*\%\s*!tex\s*root\s*\=\s*(.*)\s*$',
+                \ '\v^\s*\%\s*!TEX\s*root\s*\=\s*(.*)\s*$',
                 \ '\1', '')
     if (a:0 > 0)
         let l:root_file = fnamemodify(a:1, ':p')
