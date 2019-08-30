@@ -98,9 +98,15 @@ vim.command("let b:livepreview_buf_data['tmp_dir'] = '" +
         tempfile.mkdtemp(prefix="vim-latex-live-preview-") + "'")
 EEOOFF
 
+    let l:src_file_tail = expand('%:p:r')
+    if has('win32')
+        " Replace ':' after driver to allow l:src_file_tail
+        " be used as a path component.
+        let l:src_file_tail = substitute(l:src_file_tail, '\v(.):', '\1_', '')
+    endif
     let b:livepreview_buf_data['tmp_src_file'] =
                 \ b:livepreview_buf_data['tmp_dir'] .
-                \ expand('%:p:r')
+                \ l:src_file_tail
 
     " Guess the root file which will be compiled, using first the argument
     " passed, then the first line declaration of the source file and
@@ -156,11 +162,12 @@ EEOOFF
                 \ fnamemodify(l:root_file, ':t:r') . '.pdf'
 
     let b:livepreview_buf_data['run_cmd'] =
-                \ 'env ' .
+                \ (has('win32') ? 'set' : 'env') . ' ' .
                 \       'TEXMFOUTPUT=' . l:tmp_root_dir . ' ' .
                 \       'TEXINPUTS=' . l:tmp_root_dir
                 \                    . ':' . b:livepreview_buf_data['root_dir']
                 \                    . ': ' .
+                \ (has('win32') ? '&& ' : '') .
                 \ s:engine . ' ' .
                 \       '-shell-escape ' .
                 \       '-interaction=nonstopmode ' .
