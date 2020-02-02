@@ -87,6 +87,31 @@ function! s:Compile()
     lcd -
 endfunction
 
+" Modify a path to allow it to be a path component
+function! s:ToInterPath(path)
+    if has('win32')
+        " Replace ':' after the drive letter with an underscope
+        " to allow l:src_file_tail be used as a path component.
+        return substitute(a:path, '\v(.):', '\1_', '')
+    else
+        " There's no such limitation on other platforms
+        return a:path
+    endif
+endfunction
+
+" Get the command prefix to set some environment variables
+function! s:EnvCommand(vars)
+    let l:result = has('win32') ? '' : 'env '
+    for [key, value] in items(a:vars)
+        if has('win32')
+            let l:result .= 'set ' . key . '=' . value . ' && '
+        else
+            let l:result .= key . '=' . value . ' '
+        endif
+    endfor
+    return l:result
+endfunction
+
 function! s:StartPreview(...)
     let b:livepreview_buf_data = {}
 
@@ -98,15 +123,9 @@ vim.command("let b:livepreview_buf_data['tmp_dir'] = '" +
         tempfile.mkdtemp(prefix="vim-latex-live-preview-") + "'")
 EEOOFF
 
-    let l:src_file_tail = expand('%:p:r')
-    if has('win32')
-        " Replace ':' after driver to allow l:src_file_tail
-        " be used as a path component.
-        let l:src_file_tail = substitute(l:src_file_tail, '\v(.):', '\1_', '')
-    endif
     let b:livepreview_buf_data['tmp_src_file'] =
                 \ b:livepreview_buf_data['tmp_dir'] .
-                \ l:src_file_tail
+                \ s:ToInterPath(expand('%:p:r'))
 
     " Guess the root file which will be compiled, using first the argument
     " passed, then the first line declaration of the source file and
@@ -134,7 +153,8 @@ EEOOFF
     if (l:root_file == b:livepreview_buf_data['tmp_src_file'])                          " if root file is the current file
         let l:tmp_root_dir = l:tmp_src_dir
     else
-        let l:tmp_root_dir = b:livepreview_buf_data['tmp_dir'] . fnamemodify(l:root_file, ':p:h')
+        let l:tmp_root_dir = b:livepreview_buf_data['tmp_dir'] .
+                    \ s:ToInterPath(fnamemodify(l:root_file, ':p:h'))
         if (!isdirectory(l:tmp_root_dir))
             silent call mkdir(l:tmp_root_dir, 'p')
         endif
@@ -161,13 +181,12 @@ EEOOFF
     let l:tmp_out_file = l:tmp_root_dir . '/' .
                 \ fnamemodify(l:root_file, ':t:r') . '.pdf'
 
+    let l:tex_env_vars_cmd = s:EnvCommand(#{
+                \ TEXMFOUTPUT: l:tmp_root_dir,
+                \ TEXINPUTS: l:tmp_root_dir . ':' . b:livepreview_buf_data['root_dir'] . ':',
+                \ })
     let b:livepreview_buf_data['run_cmd'] =
-                \ (has('win32') ? 'set' : 'env') . ' ' .
-                \       'TEXMFOUTPUT=' . l:tmp_root_dir . ' ' .
-                \       'TEXINPUTS=' . l:tmp_root_dir
-                \                    . ':' . b:livepreview_buf_data['root_dir']
-                \                    . ': ' .
-                \ (has('win32') ? '&& ' : '') .
+                \ l:tex_env_vars_cmd .
                 \ s:engine . ' ' .
                 \       '-shell-escape ' .
                 \       '-interaction=nonstopmode ' .
@@ -193,11 +212,7 @@ EEOOFF
 
         " Update compile command with bibliography
         let b:livepreview_buf_data['run_cmd'] =
-                \       'env ' .
-                \               'TEXMFOUTPUT=' . l:tmp_root_dir . ' ' .
-                \               'TEXINPUTS=' . l:tmp_root_dir
-                \                            . ':' . b:livepreview_buf_data['root_dir']
-                \                            . ': ' .
+                \ l:tex_env_vars_cmd .
                 \       'bibtex ' . l:tmp_root_dir . '/*.aux' .
                 \ ' && ' .
                 \       b:livepreview_buf_data['run_cmd']
