@@ -22,6 +22,7 @@ endif
 
 " Check whether this script is already loaded
 if exists("g:loaded_vim_live_preview")
+    echo "Already loaded"
     finish
 endif
 let g:loaded_vim_live_preview = 1
@@ -29,7 +30,7 @@ let g:loaded_vim_live_preview = 1
 " Check mkdir feature
 if (!exists("*mkdir"))
     echohl ErrorMsg
-    echo 'vim-llp: mkdir required'
+    echo 'vim-latex-live-preview: mkdir functionality required'
     echohl None
     finish
 endif
@@ -41,7 +42,7 @@ elseif (has('python'))
     let s:py_exe = 'python'
 else
     echohl ErrorMsg
-    echo 'vim-llp: python required'
+    echo 'vim-latex-live-preview: python required'
     echohl None
     finish
 endif
@@ -92,6 +93,37 @@ function! s:StartPreview(...)
 
     let b:livepreview_buf_data['py_exe'] = s:py_exe
 
+    " This Pattern Matching will FAIL for multiline biblatex declarations,
+    " in which case the `g:livepreview_use_biber` setting must be respected.
+    let l:general_pattern = '^\\usepackage\[.*\]{biblatex}'
+    let l:specific_pattern = 'backend=bibtex'
+    let l:position = search(l:general_pattern, 'cw')
+    if ( l:position != 0 )
+        let l:matches = matchstr(getline(l:position), specific_pattern)
+        if ( l:matches == '' )
+            " expect s:use_biber=1
+            if ( s:use_biber == 0 )
+                let s:use_biber = 1
+                echohl ErrorMsg
+                echom "g:livepreview_use_biber not set or does not match `biblatex` usage in your document. Overridden!"
+                echohl None
+            endif
+        else
+            " expect s:use_biber=0
+            if ( s:use_biber == 1 )
+                let s:use_biber = 0
+                echohl ErrorMsg
+                echom "g:livepreview_use_biber is set but `biblatex` is explicitly using `bibtex`. Overridden!"
+                echohl None
+            endif
+        endif
+    else
+        " expect s:use_biber=0
+        " `biblatex` is not being used, this usually means we
+        " are using `bibtex`
+        " However, it is not a universal rule, so we do nothing.
+    endif
+
     " Create a temp directory for current buffer
     execute s:py_exe "<< EEOOFF"
 vim.command("let b:livepreview_buf_data['tmp_dir'] = '" +
@@ -109,6 +141,7 @@ EEOOFF
     let l:root_line = substitute(getline(1),
                 \ '\v^\s*\%\s*!TEX\s*root\s*\=\s*(.*)\s*$',
                 \ '\1', '')
+
     if (a:0 > 0)
         let l:root_file = fnamemodify(a:1, ':p')
     elseif (l:root_line != getline(1) && strlen(l:root_line) > 0)                       " TODO: existence of `% !TEX` declaration condition must be cleaned...
@@ -184,17 +217,24 @@ EEOOFF
                         \ l:tmp_root_dir . '/' . bib_fn)                                " TODO: may fail if same bibfile names in different dirs
         endfor
 
-        " Update compile command with bibliography
-        let b:livepreview_buf_data['run_cmd'] =
+        if s:use_biber
+            let s:bibexec = 'biber --input-directory=' . l:tmp_root_dir . '--output-directory=' . l:tmp_root_dir . ' ' . l:root_file
+        else
+            " The alternative to this pushing and popping is to write
+            " temporary files to a `.tmp` folder in the current directory and
+            " then `mv` them to `/tmp` and delete the `.tmp` directory.
+            let s:bibexec = 'pushd ' . l:tmp_root_dir . ' && bibtex *.aux' . ' && popd'
+        endif
+
+        let b:livepreview_buf_data['run_bib_cmd'] =
                 \       'env ' .
                 \               'TEXMFOUTPUT=' . l:tmp_root_dir . ' ' .
                 \               'TEXINPUTS=' . l:tmp_root_dir
                 \                            . ':' . b:livepreview_buf_data['root_dir']
                 \                            . ': ' .
-                \       'bibtex ' . l:tmp_root_dir . '/*.aux' .
-                \ ' && ' .
-                \       b:livepreview_buf_data['run_cmd']
+                \ ' && ' . s:bibexec
 
+        silent call system(b:livepreview_buf_data['run_bib_cmd'])
         silent call system(b:livepreview_buf_data['run_cmd'])
     endif
     if v:shell_error != 0
@@ -227,35 +267,35 @@ EEOOFF
         return 'Python initialization failed.'
     endif
 
-    " Get the tex engine
-    if exists('g:livepreview_engine')
-        let s:engine = g:livepreview_engine
-    else
-        for possible_engine in ['pdflatex', 'xelatex']
+    function! s:ValidateExecutables( context, executables )
+        for possible_engine in a:executables
             if executable(possible_engine)
-                let s:engine = possible_engine
-                break
+                return possible_engine
             endif
         endfor
-    endif
+        echohl ErrorMsg
+        echo printf("vim-latex-live-preview: Neither the explicitly set %s NOR the defaults are executable.", a:context)
+        echohl None
+        throw "End execution"
+    endfunction
+
+    " Get the tex engine
+    let s:engine = s:ValidateExecutables('livepreview_engine', [get(g:, 'livepreview_engine', ''), 'pdflatex', 'xelatex'])
 
     " Get the previewer
-    if exists('g:livepreview_previewer')
-        let s:previewer = g:livepreview_previewer
-    else
-        for possible_previewer in ['evince', 'okular']
-            if executable(possible_previewer)
-                let s:previewer = possible_previewer
-                break
-            endif
-        endfor
-    endif
+    let s:previewer = s:ValidateExecutables('livepreview_previewer', [get(g:, 'livepreview_previewer', ''), 'evince', 'okular'])
+
+    " Select bibliography executable
+    let s:use_biber = get(g:, 'livepreview_use_biber', 0)
 
     return 0
 endfunction
 
-
-let s:init_msg = s:Initialize()
+try
+    let s:init_msg = s:Initialize()
+catch
+    finish
+endtry
 
 if type(s:init_msg) == type('')
     echohl ErrorMsg

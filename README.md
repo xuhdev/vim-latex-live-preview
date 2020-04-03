@@ -116,6 +116,27 @@ overridden by setting `g:livepreview_engine` variable:
 let g:livepreview_engine = 'your_engine' . ' [options]'
 ```
 
+### Bibliography executable
+
+`LLP` uses `bibtex` as the default executable to process `.bib` files. This can
+be overridden by setting the `g:livepreview_use_biber` variable.
+
+```vim
+let g:livepreview_use_biber = 1
+```
+
+Please note that the package `biblatex` can use both `bibtex` and the newer
+`biber`, but uses `biber` by default. To use `bibtex`, add `backend=bibtex`
+to your `biblatex` usepackage declaration.
+
+```latex
+\usepackage[backend=bibtex]{biblatex}
+```
+
+Please note that `biblatex` will NOT work straight out of the box, you will
+need to set either `g:livepreview_biber` or `backend=bibtex`, but not both.
+
+
 ### Autocmd
 
 By default, the LaTeX sources will be recompiled each time the buffer is written
@@ -150,6 +171,19 @@ provided the plugin is correctly installed, this is likely a **Python** issue.
 See [issue #24](https://github.com/xuhdev/vim-latex-live-preview/issues/24),
 currently ```vim-latex-live-preview``` does not support ```python/dyn``` and Vim
 must be recompiled with Python support.
+
+### Bibliography issues
+
+Why doesn't my bibliography appear, with or without an error?
+
+See [issue #46](https://github.com/xuhdev/vim-latex-live-preview/issues/46) and 
+[PR #99](https://github.com/xuhdev/vim-latex-live-preview/pull/99).
+If you're using `biblatex` this is most likely caused by not also setting 
+`g:livepreview_use_biber = 1` in your `.vimrc`. Or if you intended to use
+`bibtex` not using that option when using the `biblatex` package. i.e.
+```latex
+\usepackage[backend=bibtex]{biblatex}
+```
 
 
 Screenshot
