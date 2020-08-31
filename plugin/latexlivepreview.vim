@@ -47,6 +47,11 @@ else
     finish
 endif
 
+" prevent undefined variable error if g:Tex_TEXINPUTS not defined by user
+if !exists('g:Tex_TEXINPUTS')
+    let g:Tex_TEXINPUTS=''
+endif
+
 let s:saved_cpo = &cpo
 set cpo&vim
 
@@ -75,7 +80,6 @@ function! s:Compile()
                 \ has_key(b:livepreview_buf_data, 'preview_running') == 0
         return
     endif
-
     " Change directory to handle properly sourced files with \input and bib
     " TODO: get rid of lcd
     execute 'lcd ' . b:livepreview_buf_data['root_dir']
