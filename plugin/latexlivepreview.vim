@@ -193,6 +193,7 @@ EEOOFF
                 \       'TEXMFOUTPUT=' . l:tmp_root_dir . ' ' .
                 \       'TEXINPUTS=' . l:tmp_root_dir
                 \                    . ':' . b:livepreview_buf_data['root_dir']
+                \                    . ':' . g:Tex_TEXINPUTS
                 \                    . ': ' .
                 \ s:engine . ' ' .
                 \       '-shell-escape ' .
@@ -231,6 +232,7 @@ EEOOFF
                 \               'TEXMFOUTPUT=' . l:tmp_root_dir . ' ' .
                 \               'TEXINPUTS=' . l:tmp_root_dir
                 \                            . ':' . b:livepreview_buf_data['root_dir']
+                \                            . ':' . g:Tex_TEXINPUTS
                 \                            . ': ' .
                 \ ' && ' . s:bibexec
 
