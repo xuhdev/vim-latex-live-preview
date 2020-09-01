@@ -47,11 +47,6 @@ else
     finish
 endif
 
-" prevent undefined variable error if g:Tex_TEXINPUTS not defined by user
-if !exists('g:Tex_TEXINPUTS')
-    let g:Tex_TEXINPUTS=''
-endif
-
 let s:saved_cpo = &cpo
 set cpo&vim
 
@@ -195,9 +190,9 @@ EEOOFF
     let b:livepreview_buf_data['run_cmd'] =
                 \ 'env ' .
                 \       'TEXMFOUTPUT=' . l:tmp_root_dir . ' ' .
-                \       'TEXINPUTS=' . l:tmp_root_dir
+                \       'TEXINPUTS=' . s:static_texinputs
+                \                    . ':' . l:tmp_root_dir
                 \                    . ':' . b:livepreview_buf_data['root_dir']
-                \                    . ':' . g:Tex_TEXINPUTS
                 \                    . ': ' .
                 \ s:engine . ' ' .
                 \       '-shell-escape ' .
@@ -234,9 +229,9 @@ EEOOFF
         let b:livepreview_buf_data['run_bib_cmd'] =
                 \       'env ' .
                 \               'TEXMFOUTPUT=' . l:tmp_root_dir . ' ' .
-                \               'TEXINPUTS=' . l:tmp_root_dir
+                \               'TEXINPUTS=' . s:static_texinputs
+                \                            . ':' . l:tmp_root_dir
                 \                            . ':' . b:livepreview_buf_data['root_dir']
-                \                            . ':' . g:Tex_TEXINPUTS
                 \                            . ': ' .
                 \ ' && ' . s:bibexec
 
@@ -287,6 +282,13 @@ EEOOFF
 
     " Get the tex engine
     let s:engine = s:ValidateExecutables('livepreview_engine', [get(g:, 'livepreview_engine', ''), 'pdflatex', 'xelatex'])
+
+    " Initialize livepreview_texinputs directory list to empty if not set
+    if exists('g:livepreview_texinputs')
+        let s:static_texinputs = g:livepreview_texinputs
+    else
+        let s:static_texinputs = $TEXINPUTS
+    endif
 
     " Get the previewer
     let s:previewer = s:ValidateExecutables('livepreview_previewer', [get(g:, 'livepreview_previewer', ''), 'evince', 'okular'])
