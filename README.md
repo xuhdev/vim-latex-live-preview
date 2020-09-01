@@ -123,8 +123,9 @@ environment variable to the compiler by default.  The default can be overridden
 by setting the `g:livepreview_texinputs` variable:
 
 ```vim
-let g:livepreview_engine = '/path1/to/files//:/path2/to/files//'
+let g:livepreview_texinputs = '/path1/to/files//:/path2/to/files//'
 ```
+
 Note:  The double trailing `/` tells the compiler to search subdirectories.
 
 ### Bibliography executable
