@@ -283,11 +283,11 @@ EEOOFF
     " Get the tex engine
     let s:engine = s:ValidateExecutables('livepreview_engine', [get(g:, 'livepreview_engine', ''), 'pdflatex', 'xelatex'])
 
-    " Initialize texinputs directory list to environment variable TEXINPUTS if g:livepreview_texinputs is not set
-    let s:static_texinputs = get(g:, 'livepreview_texinputs',$TEXINPUTS)
-
     " Get the previewer
     let s:previewer = s:ValidateExecutables('livepreview_previewer', [get(g:, 'livepreview_previewer', ''), 'evince', 'okular'])
+
+     " Initialize texinputs directory list to environment variable TEXINPUTS if g:livepreview_texinputs is not set
+    let s:static_texinputs = get(g:, 'livepreview_texinputs', $TEXINPUTS)
 
     " Select bibliography executable
     let s:use_biber = get(g:, 'livepreview_use_biber', 0)
