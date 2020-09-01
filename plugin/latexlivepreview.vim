@@ -283,12 +283,8 @@ EEOOFF
     " Get the tex engine
     let s:engine = s:ValidateExecutables('livepreview_engine', [get(g:, 'livepreview_engine', ''), 'pdflatex', 'xelatex'])
 
-    " Initialize livepreview_texinputs directory list to empty if not set
-    if exists('g:livepreview_texinputs')
-        let s:static_texinputs = g:livepreview_texinputs
-    else
-        let s:static_texinputs = $TEXINPUTS
-    endif
+    " Initialize texinputs directory list to environment variable TEXINPUTS if g:livepreview_texinputs is not set
+    let s:static_texinputs = get(g:, 'livepreview_texinputs',$TEXINPUTS)
 
     " Get the previewer
     let s:previewer = s:ValidateExecutables('livepreview_previewer', [get(g:, 'livepreview_previewer', ''), 'evince', 'okular'])
