@@ -115,6 +115,7 @@ overridden by setting `g:livepreview_engine` variable:
 ```vim
 let g:livepreview_engine = 'your_engine' . ' [options]'
 ```
+
 ### TeX Inputs
 
 TeX engines use the environment variable `TEXINPUTS` to search for packages and
