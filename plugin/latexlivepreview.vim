@@ -268,9 +268,9 @@ EEOOFF
     endif
 
     function! s:ValidateExecutables( context, executables )
-        let l:explicit_engine = get(g:, a:context, '')
-        if l:explicit_engine != ''
-            return l:explicit_engine
+        let l:user_set = get(g:, a:context, '')
+        if l:user_set != ''
+            return l:user_set
         endif
         for possible_engine in a:executables
             if executable(possible_engine)
