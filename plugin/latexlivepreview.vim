@@ -268,22 +268,26 @@ EEOOFF
     endif
 
     function! s:ValidateExecutables( context, executables )
+        let l:explicit_engine = get(g:, a:context, '')
+        if l:explicit_engine != ''
+            return l:explicit_engine
+        endif
         for possible_engine in a:executables
             if executable(possible_engine)
                 return possible_engine
             endif
         endfor
         echohl ErrorMsg
-        echo printf("vim-latex-live-preview: Neither the explicitly set %s NOR the defaults are executable.", a:context)
+        echo printf("vim-latex-live-preview: The defaults for % are not executable.", a:context)
         echohl None
         throw "End execution"
     endfunction
 
     " Get the tex engine
-    let s:engine = s:ValidateExecutables('livepreview_engine', [get(g:, 'livepreview_engine', ''), 'pdflatex', 'xelatex'])
+    let s:engine = s:ValidateExecutables('livepreview_engine', ['pdflatex', 'xelatex'])
 
     " Get the previewer
-    let s:previewer = s:ValidateExecutables('livepreview_previewer', [get(g:, 'livepreview_previewer', ''), 'evince', 'okular'])
+    let s:previewer = s:ValidateExecutables('livepreview_previewer', ['evince', 'okular'])
 
     " Select bibliography executable
     let s:use_biber = get(g:, 'livepreview_use_biber', 0)
