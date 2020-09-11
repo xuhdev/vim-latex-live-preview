@@ -191,7 +191,8 @@ EEOOFF
     let b:livepreview_buf_data['run_cmd'] =
                 \ 'env ' .
                 \       'TEXMFOUTPUT=' . l:tmp_root_dir . ' ' .
-                \       'TEXINPUTS=' . l:tmp_root_dir
+                \       'TEXINPUTS=' . s:static_texinputs
+                \                    . ':' . l:tmp_root_dir
                 \                    . ':' . b:livepreview_buf_data['root_dir']
                 \                    . ': ' .
                 \ s:engine . ' ' .
@@ -229,7 +230,8 @@ EEOOFF
         let b:livepreview_buf_data['run_bib_cmd'] =
                 \       'env ' .
                 \               'TEXMFOUTPUT=' . l:tmp_root_dir . ' ' .
-                \               'TEXINPUTS=' . l:tmp_root_dir
+                \               'TEXINPUTS=' . s:static_texinputs
+                \                            . ':' . l:tmp_root_dir
                 \                            . ':' . b:livepreview_buf_data['root_dir']
                 \                            . ': ' .
                 \ ' && ' . s:bibexec
@@ -288,6 +290,9 @@ EEOOFF
 
     " Get the previewer
     let s:previewer = s:ValidateExecutables('livepreview_previewer', ['evince', 'okular'])
+
+     " Initialize texinputs directory list to environment variable TEXINPUTS if g:livepreview_texinputs is not set
+    let s:static_texinputs = get(g:, 'livepreview_texinputs', $TEXINPUTS)
 
     " Select bibliography executable
     let s:use_biber = get(g:, 'livepreview_use_biber', 0)

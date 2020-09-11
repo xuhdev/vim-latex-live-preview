@@ -116,6 +116,19 @@ overridden by setting `g:livepreview_engine` variable:
 let g:livepreview_engine = 'your_engine' . ' [options]'
 ```
 
+### TeX Inputs
+
+TeX engines use the environment variable `TEXINPUTS` to search for packages and
+input files (`\usepackage{pkg}` or `\input{filename}`). LLP passes this
+environment variable to the compiler by default.  The default can be overridden
+by setting the `g:livepreview_texinputs` variable:
+
+```vim
+let g:livepreview_texinputs = '/path1/to/files//:/path2/to/files//'
+```
+
+Note:  The double trailing `/` tells the compiler to search subdirectories.
+
 ### Bibliography executable
 
 `LLP` uses `bibtex` as the default executable to process `.bib` files. This can
