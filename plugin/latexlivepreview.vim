@@ -22,7 +22,6 @@ endif
 
 " Check whether this script is already loaded
 if exists("g:loaded_vim_live_preview")
-    echo "Already loaded"
     finish
 endif
 let g:loaded_vim_live_preview = 1
