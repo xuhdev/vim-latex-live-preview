@@ -2,6 +2,7 @@ Unreleased
 ----------
 
 ### Added
+- August, 1st 2023: synctex support 
 
 - [[`e33ee6c`](https://github.com/xuhdev/vim-latex-live-preview/commit/e33ee6c)] - Support multiple files project [#26](https://github.com/xuhdev/vim-latex-live-preview/pull/26)
 - [[`bf5259b`](https://github.com/xuhdev/vim-latex-live-preview/commit/bf5259b)] - Support bibliography [#3](https://github.com/xuhdev/vim-latex-live-preview/pull/3)

@@ -94,7 +94,8 @@ Configuration
 
 ### Option A: PDF viewer and TeX engine and Synctex support
 At the moment of writing the version of 'vim-latex-live-preview' contained in this fork is needed.
-For the setup details see my gist.
+For the setup details see [my gist](https://gist.github.com/andreas-wachtel/1025a7d2c246af267da2b84234f57d3f).
+I still intent to put a screen-cast.
 
 
 ### Option B: PDF viewer and TeX engine (without synctex)
