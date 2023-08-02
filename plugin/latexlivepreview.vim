@@ -66,6 +66,7 @@ try:
 except:
     pass
 EEOOFF
+
 endfunction
 
 function! s:Compile()
@@ -82,10 +83,37 @@ function! s:Compile()
     " Write the current buffer in a temporary file
     silent exec 'write! ' . b:livepreview_buf_data['tmp_src_file']
 
-    call s:RunInBackground(b:livepreview_buf_data['run_cmd'])
+    " I have to wait for the compilation to finish, so that the synctex file
+	" can be updated.
+	" BEFORE: vim did not wait for compilation.
+    "call s:RunInBackground(b:livepreview_buf_data['run_cmd'])
 
-    lcd -
+    " Now: vim waites until compilation is finished to modify the synctex file
+    silent call system(b:livepreview_buf_data['run_cmd'])
+    if v:shell_error != 0
+        echo 'Failed to compile'
+        lcd -
+        return
+    endif
+
+	" FIXME: sometimes if a source.tex file is not opened, the local path
+	" inside vim is messed up. The following line restores the local path
+	" when recomilation is initiated.
+    execute 'lcd ' . b:livepreview_buf_data['root_dir']
+
+    " The following established the source file name in the synctex.gz file.
+    " unzip -> sed change tex-source in synctex -> zip
+    let l:tmp_synctex = b:livepreview_buf_data['tmp_src_file'].".synctex"
+    silent call system("gzip -d " . l:tmp_synctex.".gz")
+
+    let srctex = fnamemodify( b:livepreview_buf_data['tmp_src_file'], ':t:r' )
+    let syncRootFile = b:livepreview_buf_data['root_dir'] . "/./" . srctex . ".tex"
+    silent call system("sed -i -e '2s+^.*$+Input:1:" . syncRootFile . "+' " . l:tmp_synctex)
+
+    silent call system("gzip " . l:tmp_synctex)
+
 endfunction
+
 
 function! s:StartPreview(...)
     let b:livepreview_buf_data = {}
@@ -249,7 +277,28 @@ EEOOFF
     lcd -
 
     let b:livepreview_buf_data['preview_running'] = 1
+
+
+    " The temporary pdf file is needed as a global variable (in .vimrc) to do forwardSearch
+    let g:livepreview_tmpPDFfile = l:tmp_out_file
+    let l:tmp_synctex = b:livepreview_buf_data['tmp_src_file'].".synctex"
+
+    " The synctex.gz file is needed at both positions (where .tex is and where .pdf is)
+    silent call system("ln -fs " . l:tmp_synctex.".gz")
+
+
+    " The following established the source file name in the synctex.gz file.
+    " unzip -> sed change tex-source in synctex -> zip
+    silent call system("gzip -d " . l:tmp_synctex.".gz")
+
+    let srctex = fnamemodify( b:livepreview_buf_data['tmp_src_file'], ':t:r' )
+    let syncRootFile = b:livepreview_buf_data['root_dir'] . "/./" . srctex . ".tex"
+    silent call system("sed -i -e '2s+^.*$+Input:1:" . syncRootFile . "+' " . l:tmp_synctex)
+
+    silent call system("gzip " . l:tmp_synctex)
+
 endfunction
+
 
 " Initialization code
 function! s:Initialize()

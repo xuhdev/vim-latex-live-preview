@@ -92,29 +92,14 @@ must be escaped manually.
 Configuration
 -------------
 
-### PDF viewer
+### Option A: PDF viewer and TeX engine and Synctex support
+At the moment of writing the version of 'vim-latex-live-preview' contained in this fork is needed.
+For the setup details see my gist.
 
-By default, you need to have [evince][] or [okular][] installed as pdf viewers.
-But you can specify your own viewer by setting `g:livepreview_previewer`
-option in your `.vimrc`:
 
-```vim
-let g:livepreview_previewer = 'your_viewer'
-```
+### Option B: PDF viewer and TeX engine (without synctex)
+See [original plugin](https://github.com/xuhdev/vim-latex-live-preview)
 
-Please note that not every pdf viewer could work with this plugin. Currently
-evince and okular are known to work well. You can find a list of known working
-pdf viewers [here](https://github.com/xuhdev/vim-latex-live-preview/wiki/Known-Working-PDF-Viewers).
-
-### TeX engine
-
-`LLP` uses `pdflatex` as default engine to output a PDF to be previewed. It
-fallbacks to `xelatex` if `pdflatex` is not present. These defaults can be
-overridden by setting `g:livepreview_engine` variable:
-
-```vim
-let g:livepreview_engine = 'your_engine' . ' [options]'
-```
 
 ### TeX Inputs
 
