@@ -284,7 +284,7 @@ EEOOFF
     let l:tmp_synctex = b:livepreview_buf_data['tmp_src_file'].".synctex"
 
     " The synctex.gz file is needed at both positions (where .tex is and where .pdf is)
-    silent call system("ln -fs " . l:tmp_synctex.".gz")
+    "silent call system("ln -fs " . l:tmp_synctex.".gz")
 
 
     " The following established the source file name in the synctex.gz file.
