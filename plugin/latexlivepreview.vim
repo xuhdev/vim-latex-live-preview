@@ -88,7 +88,7 @@ function! s:Compile()
 	" BEFORE: vim did not wait for compilation.
     "call s:RunInBackground(b:livepreview_buf_data['run_cmd'])
 
-    " Now: vim waites until compilation is finished to modify the synctex file
+    " Now: vim waits until compilation is finished to modify the synctex file
     silent call system(b:livepreview_buf_data['run_cmd'])
     if v:shell_error != 0
         echo 'Failed to compile'
