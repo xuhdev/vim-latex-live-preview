@@ -168,6 +168,7 @@ EEOOFF
 
     " Escape pathnames
     let l:root_file = fnameescape(l:root_file)
+    let l:tmp_root_dir_raw = l:tmp_root_dir
     let l:tmp_root_dir = fnameescape(l:tmp_root_dir)
     let b:livepreview_buf_data['tmp_dir'] = fnameescape(b:livepreview_buf_data['tmp_dir'])
     let b:livepreview_buf_data['tmp_src_file'] = fnameescape(b:livepreview_buf_data['tmp_src_file'])
@@ -209,12 +210,12 @@ EEOOFF
     endif
 
     " Enable compilation of bibliography:
-    let l:bib_files = split(glob(b:livepreview_buf_data['root_dir'] . '/**/*.bib'))     " TODO: fails if unused bibfiles
+    let l:bib_files = split(globpath(b:livepreview_buf_data['root_dir'], '**/*.bib', 1), "\n")  " TODO: fails if unused bibfiles
     if len(l:bib_files) > 0
         for bib_file in l:bib_files
             let bib_fn = fnamemodify(bib_file, ':t')
             call writefile(readfile(bib_file),
-                        \ l:tmp_root_dir . '/' . bib_fn)                                " TODO: may fail if same bibfile names in different dirs
+                        \ l:tmp_root_dir_raw . '/' . bib_fn)                            " TODO: may fail if same bibfile names in different dirs
         endfor
 
         if s:use_biber
